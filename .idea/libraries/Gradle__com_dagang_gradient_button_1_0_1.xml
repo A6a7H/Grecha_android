@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.dagang:gradient-button-1.0.1">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/gradient-button-1.0.1.aar/5e4353e7e47a8a5c684dfc0aee043c44/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/gradient-button-1.0.1.aar/5e4353e7e47a8a5c684dfc0aee043c44/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.dagang/gradient-button/1.0.1/fc4f32b1bbd6d2a641fd5cd263302e7c73e7698/gradient-button-1.0.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
