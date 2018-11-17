@@ -8,10 +8,20 @@
     tools:context=".Controller.MainActivity"
     android:background="@drawable/screen">
 
+    <RelativeLayout
+        android:id="@+id/loadingPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+
+        android:background="@color/colorAccent"
+        android:elevation="100dp">
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="110dp">
 
         <com.dagang.library.GradientButton
             android:layout_width="230sp"
