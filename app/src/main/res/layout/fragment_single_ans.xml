@@ -7,8 +7,6 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/rsb_red"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Controller.QAFrgament">
-
+    tools:context=".Controller.QAFragment">
 
 </LinearLayout>

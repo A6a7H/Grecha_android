@@ -2,17 +2,22 @@ package com.example.lifcar.myapplication.Controller;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.lifcar.myapplication.R;
+import com.labo.kaji.fragmentanimations.MoveAnimation;
 
-public class QAFrgament extends Fragment{
+public class QAFragment extends Fragment{
+
+    public int a;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -21,11 +26,18 @@ public class QAFrgament extends Fragment{
         return inflater.inflate(R.layout.fragment_single_ans, container, false);
     }
 
+
     @Override
     public void onStart() {
         super.onStart();
 
-        String[] list = {"l", "k"};
+        String[] list;
+
+        if (a == 1){
+            list = new String[]{"l", "k"};
+        } else {
+            list = new String[]{"a", "b", "c"};
+        }
 
         LinearLayout linearLayout = (LinearLayout)getActivity().findViewById(R.id.qall);
         LayoutInflater inflater = LayoutInflater.from(getContext());
@@ -35,6 +47,15 @@ public class QAFrgament extends Fragment{
                 @Override
                 public void onClick(View view) {
                     Log.d("TAG", "onClick:" + item);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    QAFragment n = new QAFragment();
+                    if(a == 1){
+                        n.a = 2;
+                    } else {
+                        n.a = 1;
+                    }
+                    transaction.replace(R.id.qa_fragment, n);
+                    transaction.commit();
                 }
             });
 
@@ -43,6 +64,11 @@ public class QAFrgament extends Fragment{
             // set item content in view
             linearLayout.addView(view);
         }
+    }
+
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return  MoveAnimation.create(MoveAnimation.LEFT, enter, 1000);
     }
 
     @Override

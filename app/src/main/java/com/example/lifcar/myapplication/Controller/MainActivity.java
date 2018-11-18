@@ -1,5 +1,6 @@
 package com.example.lifcar.myapplication.Controller;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentTransaction;
@@ -7,8 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.dagang.library.GradientButton;
 import com.example.lifcar.myapplication.Manager.ServerManager;
@@ -63,7 +64,9 @@ public class MainActivity extends AppCompatActivity {
         // получение вью нижнего экрана
         LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
 
-        setFragment(new QAFrgament());
+
+        setFragment();
+
 
         // настройка поведения нижнего экрана
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
@@ -74,15 +77,28 @@ public class MainActivity extends AppCompatActivity {
         // настройка возможности скрыть элемент при свайпе вниз
         bottomSheetBehavior.setHideable(true);
 
+        final RelativeLayout loadingPanel = (RelativeLayout)findViewById(R.id.loadingPanel);
+        loadingPanel.setBackgroundColor(Color.parseColor("#000000"));
+        loadingPanel.setAlpha(0);
+
         // настройка колбэков при изменениях
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
+                if(newState == BottomSheetBehavior.STATE_HIDDEN){
+                    loadingPanel.setAlpha(0);
+                    LinearLayout linearLayout = (LinearLayout)findViewById(R.id.qall);
+                    linearLayout.removeAllViews();
+                    setFragment();
+                }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                if(Double.isNaN(slideOffset)){
+                    slideOffset = 0;
+                }
+                loadingPanel.setAlpha((1+slideOffset)/2);
                 Log.d(TAG, "onSlide: "+ slideOffset);
             }
         });
@@ -96,16 +112,18 @@ public class MainActivity extends AppCompatActivity {
 
                 Log.d(TAG, "onClick: work!");
 
-                setFragment(new QAFrgament());
+                setFragment();
 
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
     }
 
-    private void setFragment(QAFrgament qaFrgament){
+    private void setFragment(){
+        QAFragment qaFragment = new QAFragment();
+        qaFragment.a = 1;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.qa_fragment, qaFrgament);
+        transaction.replace(R.id.qa_fragment, qaFragment);
         transaction.commit();
     }
 }
