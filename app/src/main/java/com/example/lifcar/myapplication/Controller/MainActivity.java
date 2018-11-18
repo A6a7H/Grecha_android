@@ -35,44 +35,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String body =
-                "{\n" +
-                "                \"response\": {\n" +
-                "            \"text\": \"Здравствуйте! Это мы, хороводоведы.\",\n" +
-                "                    \"tts\": \"Здравствуйте! Это мы, хоров+одо в+еды.\",\n" +
-                "                    \"buttons\": [\n" +
-                "            {\n" +
-                "                \"title\": \"Надпись на кнопке\",\n" +
-                "                    \"payload\": {},\n" +
-                "                \"url\": \"https://example.com/\",\n" +
-                "                    \"hide\": true\n" +
-                "            }\n" +
-                "    ],\n" +
-                "            \"end_session\": false\n" +
-                "        },\n" +
-                "        \"session\": {\n" +
-                "            \"session_id\": \"2eac4854-fce721f3-b845abba-20d60\",\n" +
-                "                    \"message_id\": 4,\n" +
-                "                    \"user_id\": \"AC9WC3DF6FCE052E45A4566A48E6B7193774B84814CE49A922E163B8B29881DC\"\n" +
-                "        },\n" +
-                "        \"version\": \"1.0\"\n" +
-                "}";
-
-        try {
-            OnMesResponse onMesResponse = new Gson().fromJson(body, OnMesResponse.class);
-            if (onMesResponse != null) {
-                Log.d(TAG, "onCreate:" + onMesResponse.session.session_id);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
         // получение вью нижнего экрана
         LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
-
-//        setFragment(null, null);
-
 
 
         // настройка поведения нижнего экрана

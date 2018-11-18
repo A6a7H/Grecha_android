@@ -9,10 +9,9 @@
         android:id="@+id/nextButton"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:background="@drawable/sheet_next_button_back"
+        android:background="@color/rsb_red"
         android:layout_margin="7dp"
-        android:textColor="#00FF00"
-        android:text="Далее"
-        android:fontFamily="sans-serif-light"/>
+        android:textColor="#fff"
+        android:text="Далее" />
 
 </RelativeLayout>

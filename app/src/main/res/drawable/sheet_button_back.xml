@@ -6,18 +6,19 @@
         <shape>
             <gradient
                 android:type="linear"
-                android:endColor="#E0E0E0"
-                android:startColor="#BDBDBD"
+                android:endColor="#ddd"
+                android:startColor="#ddd"
                 android:angle="90.0" />
             <corners android:radius="4sp" />
         </shape>
     </item>
     <item android:state_enabled="true">
         <shape>
+            <stroke android:width="3px" android:color="#00FF00" />
             <gradient
                 android:type="linear"
-                android:endColor="@color/rsb_red"
-                android:startColor="@color/colorAccent"
+                android:endColor="#ddd"
+                android:startColor="#ddd"
                 android:angle="90.0" />
             <corners android:radius="4sp" />
         </shape>

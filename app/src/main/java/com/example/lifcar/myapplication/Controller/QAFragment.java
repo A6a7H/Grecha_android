@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -65,14 +66,15 @@ public class QAFragment extends Fragment{
             case SINGLE_ASNWER_QUESTION:{
                 for (final CButton item : buttons) {
                     View view  = inflater.inflate(R.layout.item_sheet, linearLayout, false);
-                    setItemSheetOnClick(view, item);
+                    setItemSheetOnClick(view, item, 1);
 
                     TextView textView = (TextView)view.findViewById(R.id.textView);
                     textView.setText(item.title);
 
                     linearLayout.addView(view);
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
                 }
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
             }
             case MULTI_ANSWER_QUESTION:{
@@ -99,20 +101,40 @@ public class QAFragment extends Fragment{
                     TextView textView = (TextView)view.findViewById(R.id.textView);
                     textView.setText(item.title);
                     linearLayout.addView(view);
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 }
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
                 View view  = inflater.inflate(R.layout.button_next_sheet, linearLayout, false);
                 final TextView nextButton = view.findViewById(R.id.nextButton);
-                setNextOnClick(nextButton);
+                setNextOnClick(nextButton, 2);
                 linearLayout.addView(view);
                 break;
             }
             case MES_ANSWER_QUESTION:{
+                View view  = inflater.inflate(R.layout.input_sheet, linearLayout, false);
+                final EditText editText = view.findViewById(R.id.editText);
+                editText.setEnabled(true);
+
+                View viewNext  = inflater.inflate(R.layout.button_next_sheet, linearLayout, false);
+                final TextView nextButton = viewNext.findViewById(R.id.nextButton);
+                nextButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (editText.getText().toString() != null){
+                            changeContent(null, bottomSheetBehavior, 3);
+                        }
+                    }
+                });
+
+                linearLayout.addView(view);
+                linearLayout.addView(viewNext);
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
             }
             case RESULT:{
+                View view  = inflater.inflate(R.layout.card_item, linearLayout, false);
+                linearLayout.addView(view);
+
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                 break;
             }
@@ -121,7 +143,7 @@ public class QAFragment extends Fragment{
         }
     }
 
-    private void setItemSheetOnClick(View view, final CButton item){
+    private void setItemSheetOnClick(View view, final CButton item, final int k){
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -134,7 +156,7 @@ public class QAFragment extends Fragment{
                             @Override
                             public void run() {
                                 linearLayout.removeAllViews();
-                                changeContent(onMesResponse.response, bottomSheetBehavior);
+                                changeContent(onMesResponse.response, bottomSheetBehavior, k);
                             }
                         });
                     }
@@ -143,7 +165,7 @@ public class QAFragment extends Fragment{
         });
     }
 
-    private void setNextOnClick(TextView nextButton){
+    private void setNextOnClick(TextView nextButton, final int k){
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -164,7 +186,7 @@ public class QAFragment extends Fragment{
                                 @Override
                                 public void run() {
                                     linearLayout.removeAllViews();
-                                    changeContent(onMesResponse.response, bottomSheetBehavior);
+                                    changeContent(onMesResponse.response, bottomSheetBehavior, k);
                                 }
                             });
                         }
@@ -186,13 +208,16 @@ public class QAFragment extends Fragment{
         return ansRequest;
     }
 
-    private void changeContent(InnerResponse response, BottomSheetBehavior bottomSheetBehavior){
+    private void changeContent(InnerResponse response, BottomSheetBehavior bottomSheetBehavior, int k){
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         QAFragment qaFragment = new QAFragment();
         qaFragment.bottomSheetBehavior = bottomSheetBehavior;
-        qaFragment.type = 1;
-        qaFragment.buttons = response.buttons;
-        qaFragment.question = response.title;
+        qaFragment.type = k;
+        if(response != null){
+
+            qaFragment.buttons = response.buttons;
+            qaFragment.question = response.title;
+        }
         transaction.replace(R.id.qa_fragment, qaFragment);
         transaction.commit();
     }
