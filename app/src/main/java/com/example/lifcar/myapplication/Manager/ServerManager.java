@@ -3,6 +3,9 @@ package com.example.lifcar.myapplication.Manager;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.lifcar.myapplication.Model.AnsRequest;
+import com.example.lifcar.myapplication.Model.OnMesResponse;
+import com.example.lifcar.myapplication.Other.GetQuestionCallback;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -28,34 +31,40 @@ public class ServerManager {
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
 
-    public static void GetQuestion(String phoneNum) {
+    public static void GetQuestion(final GetQuestionCallback getQuestionCallback, AnsRequest req) {
         Log.d(TAG, "Sart GetQuestion");
         OkHttpClient client = new OkHttpClient();
 
         String url = BASE_URL;
 
-        String json =
-                "{\n" +
-                        "                \"response\": {\n" +
-                        "            \"text\": \"Здравствуйте! Это мы, хороводоведы.\",\n" +
-                        "                    \"tts\": \"Здравствуйте! Это мы, хоров+одо в+еды.\",\n" +
-                        "                    \"buttons\": [\n" +
-                        "            {\n" +
-                        "                \"title\": \"Надпись на кнопке\",\n" +
-                        "                    \"payload\": {},\n" +
-                        "                \"url\": \"https://example.com/\",\n" +
-                        "                    \"hide\": true\n" +
-                        "            }\n" +
-                        "    ],\n" +
-                        "            \"end_session\": false\n" +
-                        "        },\n" +
-                        "        \"session\": {\n" +
-                        "            \"session_id\": \"2eac4854-fce721f3-b845abba-20d60\",\n" +
-                        "                    \"message_id\": 4,\n" +
-                        "                    \"user_id\": \"AC9WC3DF6FCE052E45A4566A48E6B7193774B84814CE49A922E163B8B29881DC\"\n" +
-                        "        },\n" +
-                        "        \"version\": \"1.0\"\n" +
-                        "}";
+//        String json =
+//                "{" +
+//                        "                \"response\": {" +
+//                        "            \"text\": \"Здравствуйте! Это мы, хороводоведы.\"," +
+//                        "                    \"tts\": \"Здравствуйте! Это мы, хоров+одо в+еды.\"," +
+//                        "                    \"buttons\": [" +
+//                        "            {" +
+//                        "                \"title\": \"Надпись на кнопке\"," +
+//                        "                    \"payload\": {},\n" +
+//                        "                \"url\": \"https://example.com/\"," +
+//                        "                    \"hide\": true" +
+//                        "            }" +
+//                        "    ]," +
+//                        "            \"end_session\": false" +
+//                        "        }," +
+//                        "        \"session\": {" +
+//                        "            \"session_id\": \"2eac4854-fce721f3-b845abba-20d60\"," +
+//                        "                    \"message_id\": 4," +
+//                        "                    \"user_id\": \"AC9WC3DF6FCE052E45A4566A48E6B7193774B84814CE49A922E163B8B29881DC\"" +
+//                        "        }," +
+//                        "        \"version\": \"1.0\"" +
+//                        "}";
+
+//        OnMesResponse onMesResponse = new OnMesResponse();
+//        onMesResponse.
+
+        Gson gson = new Gson();
+        String json = gson.toJson(req);
 
         RequestBody body = RequestBody.create(JSON, json);
 
@@ -79,7 +88,19 @@ public class ServerManager {
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    Log.d(TAG, "onResponse:" + response.body().string());
+                    String body = response.body().string();
+                    Log.d(TAG, "onResponse:" + body);
+
+                    try {
+                        OnMesResponse onMesResponse = new Gson().fromJson(body, OnMesResponse.class);
+                        Log.d(TAG, "onResponse:" + onMesResponse.response.buttons.get(0).title);
+                        if (onMesResponse != null) {
+                            getQuestionCallback.setOnMesResponse(onMesResponse);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 } else {
                     Log.d(TAG, "GetQuestion response is NOT success: " + response.toString());
                 }

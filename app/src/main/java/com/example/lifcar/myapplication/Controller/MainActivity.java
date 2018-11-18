@@ -7,26 +7,33 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.dagang.library.GradientButton;
 import com.example.lifcar.myapplication.Manager.ServerManager;
+import com.example.lifcar.myapplication.Model.AnsRequest;
+import com.example.lifcar.myapplication.Model.InnerResponse;
 import com.example.lifcar.myapplication.Model.OnMesResponse;
+import com.example.lifcar.myapplication.Model.Session;
+import com.example.lifcar.myapplication.Other.GetQuestionCallback;
 import com.example.lifcar.myapplication.R;
 import com.google.gson.Gson;
+
+import java.util.concurrent.ThreadLocalRandom;
 
 public class MainActivity extends AppCompatActivity {
 
     private GradientButton chooseTarif;
     private final String TAG = "MAIN_LOG";
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         String body =
                 "{\n" +
@@ -64,15 +71,18 @@ public class MainActivity extends AppCompatActivity {
         // получение вью нижнего экрана
         LinearLayout llBottomSheet = (LinearLayout) findViewById(R.id.bottom_sheet);
 
+//        setFragment(null, null);
 
-        setFragment();
 
 
         // настройка поведения нижнего экрана
         final BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(llBottomSheet);
 
         // настройка состояний нижнего экрана
+
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
 
         // настройка возможности скрыть элемент при свайпе вниз
         bottomSheetBehavior.setHideable(true);
@@ -89,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                     loadingPanel.setAlpha(0);
                     LinearLayout linearLayout = (LinearLayout)findViewById(R.id.qall);
                     linearLayout.removeAllViews();
-                    setFragment();
+//                    setFragment(null);
                 }
             }
 
@@ -100,6 +110,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 loadingPanel.setAlpha((1+slideOffset)/2);
                 Log.d(TAG, "onSlide: "+ slideOffset);
+
+//                setFragment(null);
             }
         });
 
@@ -108,20 +120,39 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                ServerManager.GetQuestion("");
+
+                ServerManager.GetQuestion(new GetQuestionCallback() {
+                    @Override
+                    public void setOnMesResponse(OnMesResponse onMesResponse) {
+                        setFragment(onMesResponse.response, bottomSheetBehavior);
+                    }
+                }, genRequest(""));
 
                 Log.d(TAG, "onClick: work!");
-
-                setFragment();
-
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
         });
     }
 
-    private void setFragment(){
+    private AnsRequest genRequest(String command){
+        AnsRequest ansRequest = new AnsRequest();
+        AnsRequest.Request request = new AnsRequest.Request();
+        Session session = new Session();
+        request.command = command;
+        session.session_id = String.valueOf(ThreadLocalRandom.current().nextInt(10000, 30000));
+        session.isNew = true;
+        ansRequest.session = session;
+        ansRequest.request = request;
+        return ansRequest;
+    }
+
+    private void setFragment(InnerResponse response, BottomSheetBehavior bottomSheetBehavior){
         QAFragment qaFragment = new QAFragment();
-        qaFragment.a = 1;
+        qaFragment.bottomSheetBehavior = bottomSheetBehavior;
+        if(response != null){
+            qaFragment.type = 0;
+            qaFragment.buttons = response.buttons;
+            qaFragment.question = response.title;
+        } else qaFragment.type = 0;
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.qa_fragment, qaFragment);
         transaction.commit();
