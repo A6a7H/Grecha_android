@@ -43,7 +43,7 @@
             app:button_shadow_color="#BF841012"
             app:button_shadow_distance="4dp"
             app:button_shadow_radius="4dp"
-            app:button_text="Выбрать тариф"
+            app:button_text="Подобрать продукт"
             />
 
     </RelativeLayout>

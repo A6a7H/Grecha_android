@@ -84,6 +84,13 @@ public class QAFragment extends Fragment{
 
                 for (final CButton item : buttons) {
                     View view  = inflater.inflate(R.layout.item_sheet, linearLayout, false);
+//                    final TextView test = (TextView)view.findViewById(R.id.header);
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            test.setText("Выберите подходящие кэшбэки");
+//                        }
+//                    });
                     final TextView textViewBut = view.findViewById(R.id.textView);
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override

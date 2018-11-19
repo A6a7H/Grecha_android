@@ -6,6 +6,9 @@ public class CButton {
     @SerializedName("title")
     public String title;
 
+    @SerializedName("title1")
+    public String title1;
+
 //    @SerializedName("payload")
 //    public String payload;
 }
